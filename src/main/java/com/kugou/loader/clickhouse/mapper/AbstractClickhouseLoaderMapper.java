@@ -320,7 +320,11 @@ public abstract class AbstractClickhouseLoaderMapper<KEYIN, VALUEIN, KEYOUT, VAL
             done = true;
             for (String h : hostStatus.keySet()){
                 if (!hostStatus.get(h) & cache.ready){
-                    log.info("Clickhouse Loader : try ["+count +"] loading data to host -> " + h + ", batchsize -> "+cache.recordsCount);
+                    log.info("Clickhouse Loader : try ["+count +"] loading data to " +
+                            "host -> " + h + ", " +
+                            "port -> " + port + ", " +
+                            "database -> " + distributedLocalDatabase + ", " +
+                            "batchsize -> "+cache.recordsCount);
                     try {
                         long l = System.currentTimeMillis();
                         ClickhouseClient client = ClickhouseClientHolder.getClickhouseClient(h, port, distributedLocalDatabase, config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_USERNAME), config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_PASSWORD));
