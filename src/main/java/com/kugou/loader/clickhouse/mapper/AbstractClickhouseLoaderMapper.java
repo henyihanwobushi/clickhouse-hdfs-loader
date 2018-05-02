@@ -324,6 +324,7 @@ public abstract class AbstractClickhouseLoaderMapper<KEYIN, VALUEIN, KEYOUT, VAL
                             "host -> " + h + ", " +
                             "port -> " + port + ", " +
                             "database -> " + distributedLocalDatabase + ", " +
+                            "config: [db: " + this.config.getDatabase()+ ", tb" + this.config.getTableName() + "]" +
                             "batchsize -> "+cache.recordsCount);
                     try {
                         long l = System.currentTimeMillis();
