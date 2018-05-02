@@ -328,7 +328,7 @@ public abstract class AbstractClickhouseLoaderMapper<KEYIN, VALUEIN, KEYOUT, VAL
                             "batchsize -> "+cache.recordsCount);
                     try {
                         long l = System.currentTimeMillis();
-                        ClickhouseClient client = ClickhouseClientHolder.getClickhouseClient(h, port, distributedLocalDatabase, config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_USERNAME), config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_PASSWORD));
+                        ClickhouseClient client = ClickhouseClientHolder.getClickhouseClient(h, port, this.config.getDatabase(), config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_USERNAME), config.get(ConfigurationKeys.CLI_P_CLICKHOUSE_PASSWORD));
                         client.insert(cache.records.toString());
                         hostStatus.put(h, true);
                         log.info("Clickhouse Loader : loaded data to host -> " + h +", take time "+(System.currentTimeMillis() - l)+"ms.");
@@ -336,7 +336,7 @@ public abstract class AbstractClickhouseLoaderMapper<KEYIN, VALUEIN, KEYOUT, VAL
                         done = false;
                         log.error("Clickhouse JDBC : failed. COUSE BY "+e.getMessage(), e);
                         if(count+1 == tries){
-                            log.error("Clickhouse JDBC: ERROR SQL:"+cache.records.toString());
+                            log.error("Clickhouse JDBC: ERROR SQL:"+cache.records.toString().substring(0, 2000));
                         }
                         try {
                             Thread.sleep((tries+1)*10000l);
@@ -547,7 +547,7 @@ public abstract class AbstractClickhouseLoaderMapper<KEYIN, VALUEIN, KEYOUT, VAL
             // Not for insert into temp distributed table
             this.sqlHeader = "INSERT INTO temp."+ this.tempTable +" FORMAT "+configuration.getClickhouseFormat();
         }else{
-            this.sqlHeader = "INSERT INTO "+distributedLocalDatabase+"."+distributedLocalTable+" FORMAT "+configuration.getClickhouseFormat();
+            this.sqlHeader = "INSERT INTO "+this.config.getDatabase()+"."+this.config.getTableName()+" FORMAT "+configuration.getClickhouseFormat();
         }
 
         log.info("Clickhouse JDBC : INSERT USING header["+sqlHeader+"]");
